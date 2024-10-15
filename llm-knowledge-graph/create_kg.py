@@ -68,7 +68,7 @@ for chunk in chunks:
         SET c.text = $text
         MERGE (d)<-[:PART_OF]-(c)
         WITH c
-        CALL db.create.setNodeVectorProperty(c, 'textEmbedding', $embedding)
+        CALL db.create.setNodeVectorProperty(c, 'embedding', $embedding)
         """, 
         properties
     )
@@ -98,9 +98,8 @@ for chunk in chunks:
 
 # Create the vector index
 graph.query("""
-    CREATE VECTOR INDEX `chunkVector`
-    IF NOT EXISTS
-    FOR (c: Chunk) ON (c.textEmbedding)
+    CREATE VECTOR INDEX `vector`
+    FOR (c: Chunk) ON (c.embedding)
     OPTIONS {indexConfig: {
     `vector.dimensions`: 1536,
     `vector.similarity_function`: 'cosine'
